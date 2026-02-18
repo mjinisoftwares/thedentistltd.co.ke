@@ -1,19 +1,23 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { resendAdapter } from '@payloadcms/email-resend'
 import sharp from 'sharp'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
-
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
+import { Partners } from './collections/Partners'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { Services } from './collections/Services'
+import { Team } from './collections/Team'
+import { UsefulLinks } from './collections/UsefulLinks'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -62,7 +66,12 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  email: resendAdapter({
+    apiKey: process.env.RESEND_API || '',
+    defaultFromAddress: 'info@thedentistltd.co.ke',
+    defaultFromName: 'The Dentist LTD',
+  }),
+  collections: [Pages, Posts, Media, Categories, Users, Partners, Team, UsefulLinks, Services],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins,

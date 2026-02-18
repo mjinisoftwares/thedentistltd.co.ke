@@ -1,99 +1,99 @@
 import type { Metadata } from 'next'
+import React, { cache } from 'react'
+import { draftMode } from 'next/headers'
 
-import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
-import { draftMode } from 'next/headers'
-import React, { cache } from 'react'
-import { homeStatic } from '@/endpoints/seed/home-static'
 
+import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
+import ReviewsWidget from '@/components/GoogleReviews'
 
+// -----------------------------
+// Static Params
+// -----------------------------
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
+
   const pages = await payload.find({
     collection: 'pages',
     draft: false,
     limit: 1000,
-    overrideAccess: false,
     pagination: false,
-    select: {
-      slug: true,
-    },
+    overrideAccess: false,
+    select: { slug: true },
   })
 
-  const params = pages.docs
-    ?.filter((doc) => {
-      return doc.slug !== 'home'
-    })
-    .map(({ slug }) => {
-      return { slug }
-    })
-
-  return params
+  return (
+    pages.docs
+      ?.filter((doc) => doc.slug && doc.slug !== 'home')
+      .map((doc) => ({ slug: doc.slug })) ?? []
+  )
 }
 
-type Args = {
+// -----------------------------
+// Types
+// -----------------------------
+type PageProps = {
   params: Promise<{
     slug?: string
   }>
 }
 
-export default async function Page({ params: paramsPromise }: Args) {
+// -----------------------------
+// Page
+// -----------------------------
+export default async function Page({ params: paramsPromise }: PageProps) {
   const { isEnabled: draft } = await draftMode()
   const { slug = 'home' } = await paramsPromise
-  // Decode to support slugs with special characters
+
   const decodedSlug = decodeURIComponent(slug)
-  const url = '/' + decodedSlug
-  let page: RequiredDataFromCollectionSlug<'pages'> | null
+  const url = `/${decodedSlug}`
 
-  page = await queryPageBySlug({
-    slug: decodedSlug,
-  })
-
-  // Remove this code once your website is seeded
-  if (!page && slug === 'home') {
-    page = homeStatic
-  }
+  const page = await queryPageBySlug(decodedSlug)
 
   if (!page) {
     return <PayloadRedirects url={url} />
   }
 
-  const { hero, layout } = page
-
   return (
-    <article className="pt-16 pb-24">
+    <article className="pt-32">
       <PageClient />
-      {/* Allows redirects for valid pages too */}
+
+      {/* allow redirects even for valid pages */}
       <PayloadRedirects disableNotFound url={url} />
 
       {draft && <LivePreviewListener />}
 
-      <RenderHero {...hero} />
-      <RenderBlocks blocks={layout} />
+      <RenderHero {...page.hero} />
+      <RenderBlocks blocks={page.layout} />
+
+      <ReviewsWidget />
     </article>
   )
 }
 
-export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
+// -----------------------------
+// Metadata
+// -----------------------------
+export async function generateMetadata({ params: paramsPromise }: PageProps): Promise<Metadata> {
   const { slug = 'home' } = await paramsPromise
-  // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
-  const page = await queryPageBySlug({
-    slug: decodedSlug,
-  })
+
+  const page = await queryPageBySlug(decodedSlug)
 
   return generateMeta({ doc: page })
 }
 
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
+// -----------------------------
+// Cached Query
+// -----------------------------
+const queryPageBySlug = cache(async (slug: string) => {
   const { isEnabled: draft } = await draftMode()
-
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
@@ -103,11 +103,9 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
     pagination: false,
     overrideAccess: draft,
     where: {
-      slug: {
-        equals: slug,
-      },
+      slug: { equals: slug },
     },
   })
 
-  return result.docs?.[0] || null
+  return (result.docs?.[0] ?? null) as RequiredDataFromCollectionSlug<'pages'> | null
 })

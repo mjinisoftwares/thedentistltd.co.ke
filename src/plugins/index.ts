@@ -9,23 +9,34 @@ import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
-
-import { Page, Post } from '@/payload-types'
+import { Page, Post, Service } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
+import { s3Storage } from '@payloadcms/storage-s3'
 
-const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
+const generateTitle: GenerateTitle<Post | Page | Service> = ({ doc }) => {
   return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
 }
 
-const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
+const generateURL: GenerateURL<Post | Page | Service> = ({ doc, collectionConfig }) => {
   const url = getServerSideURL()
+  const slug = (doc as { slug?: string })?.slug
 
-  return doc?.slug ? `${url}/${doc.slug}` : url
+  if (!slug) return url
+
+  if (collectionConfig?.slug === 'posts') {
+    return `${url}/posts/${slug}`
+  }
+
+  if (collectionConfig?.slug === 'services') {
+    return `${url}/services/${slug}`
+  }
+
+  return `${url}/${slug}`
 }
 
 export const plugins: Plugin[] = [
   redirectsPlugin({
-    collections: ['pages', 'posts'],
+    collections: ['pages', 'posts', 'services'],
     overrides: {
       // @ts-expect-error - This is a valid override, mapped fields don't resolve to the same type
       fields: ({ defaultFields }) => {
@@ -81,12 +92,34 @@ export const plugins: Plugin[] = [
     },
   }),
   searchPlugin({
-    collections: ['posts'],
+    collections: ['posts', 'pages', 'services'],
     beforeSync: beforeSyncWithSearch,
     searchOverrides: {
       fields: ({ defaultFields }) => {
         return [...defaultFields, ...searchFields]
       },
+    },
+  }),
+
+  s3Storage({
+    collections: {
+      media: {
+        disableLocalStorage: true,
+        disablePayloadAccessControl: true,
+        generateFileURL: ({ filename }) => {
+          return `${process.env.S3_BUCKET_URL}/${filename}`
+        },
+      },
+    },
+    bucket: process.env.S3_BUCKET || '',
+    config: {
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+      },
+      region: process.env.S3_REGION || '',
+      endpoint: process.env.S3_ENDPOINT || '',
+      forcePathStyle: true,
     },
   }),
 ]

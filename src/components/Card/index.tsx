@@ -4,17 +4,19 @@ import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
 import React, { Fragment } from 'react'
 
-import type { Post } from '@/payload-types'
+import type { Post, Service } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 
-export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
+export type CardPostData =
+  | (Pick<Post, 'slug' | 'categories' | 'meta' | 'title'> & { relationTo?: 'posts' })
+  | (Pick<Service, 'slug' | 'meta' | 'title'> & { relationTo?: 'services'; categories?: never })
 
 export const Card: React.FC<{
   alignItems?: 'center'
   className?: string
   doc?: CardPostData
-  relationTo?: 'posts'
+  relationTo?: 'posts' | 'services'
   showCategories?: boolean
   title?: string
 }> = (props) => {

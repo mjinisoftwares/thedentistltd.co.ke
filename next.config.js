@@ -18,6 +18,11 @@ const nextConfig = {
           protocol: url.protocol.replace(':', ''),
         }
       }),
+
+      {
+        protocol: 'https',
+        hostname: 'pub-f4fdcc1c9f94456da122f35cbc892701.r2.dev',
+      },
     ],
   },
   webpack: (webpackConfig) => {
