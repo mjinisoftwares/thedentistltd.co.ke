@@ -103,7 +103,7 @@ export const Feature2BlockComponent: React.FC<Props> = ({ richText, image, links
       {/* Featurable Badge Script */}
       <Script
         src="https://featurable.com/assets/v2/badge_default.min.js"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         defer
         charSet="UTF-8"
       />

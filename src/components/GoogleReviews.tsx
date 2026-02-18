@@ -23,7 +23,7 @@ export default function ReviewsWidget() {
       {/* ✅ External Script */}
       <Script
         src="https://featurable.com/assets/v2/carousel_default.min.js"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         charSet="UTF-8"
       />
     </>
