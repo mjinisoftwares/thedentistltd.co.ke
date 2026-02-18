@@ -17,15 +17,8 @@ import { ServiceBlock } from '@/blocks/ServiceBlock/Component'
 import { TeamBlockComponent } from '@/blocks/TeamBlock/Component'
 import { UsefulLinksBlockComponent } from './UsefulLinksBlock/Component'
 import { AboutBlockComponent } from './AboutBlock/Component'
-import dynamic from 'next/dynamic'
-const Feature2BlockComponent = dynamic(
-  () => import('./Feature2Block/Component').then((m) => m.Feature2BlockComponent),
-  { ssr: true },
-)
-const MapBlockComponent = dynamic(
-  () => import('./MapBlock/Component').then((m) => m.MapBlockComponent),
-  { ssr: false },
-)
+import { Feature2BlockComponent } from './Feature2Block/Component'
+import { MapBlockComponent } from './MapBlock/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
