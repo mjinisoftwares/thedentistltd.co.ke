@@ -80,8 +80,8 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ slides }) => {
                 className="bg-primary/5 mb-8 bg-muted flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md"
               >
                 <span className="text-sm text-foreground">Quality & Compassionate Dental Care</span>
-                <div className="bg-background size-6 rounded-full">
-                  <ArrowRight className="m-auto mt-1.3 size-3" />
+                <div className="bg-background size-6 rounded-full mx-auto">
+                  <ArrowRight className="mx-auto mt-1.5 size-3" />
                 </div>
               </Link>
 
