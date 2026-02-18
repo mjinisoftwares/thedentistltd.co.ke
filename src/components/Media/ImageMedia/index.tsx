@@ -45,6 +45,7 @@ const placeholderBlur =
 export const ImageMedia: React.FC<MediaProps> = (props) => {
   const {
     alt: altFromProps,
+    fetchPriority,
     fill,
     pictureClassName,
     imgClassName,
@@ -89,6 +90,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         priority={priority}
         quality={80}
         loading={loading}
+        fetchPriority={fetchPriority}
         sizes={sizes}
         src={src}
         width={!fill ? width : undefined}

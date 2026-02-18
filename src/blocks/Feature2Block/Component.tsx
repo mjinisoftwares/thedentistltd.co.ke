@@ -37,8 +37,29 @@ const itemVariants: Variants = {
 }
 
 export const Feature2BlockComponent: React.FC<Props> = ({ richText, image, links, className }) => {
+  const [isVisible, setIsVisible] = React.useState(false)
+  const sectionRef = React.useRef<HTMLElement>(null)
+
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '200px' },
+    )
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <section className={cn('py-24 overflow-hidden bg-background', className)}>
+    <section ref={sectionRef} className={cn('py-24 overflow-hidden bg-background', className)}>
       <div className="container">
         <motion.div
           initial="hidden"
@@ -100,13 +121,15 @@ export const Feature2BlockComponent: React.FC<Props> = ({ richText, image, links
         </motion.div>
       </div>
 
-      {/* Featurable Badge Script */}
-      <Script
-        src="https://featurable.com/assets/v2/badge_default.min.js"
-        strategy="lazyOnload"
-        defer
-        charSet="UTF-8"
-      />
+      {/* Featurable Badge Script - Only loads when section is visible */}
+      {isVisible && (
+        <Script
+          src="https://featurable.com/assets/v2/badge_default.min.js"
+          strategy="lazyOnload"
+          defer
+          charSet="UTF-8"
+        />
+      )}
     </section>
   )
 }

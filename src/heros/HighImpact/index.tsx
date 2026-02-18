@@ -139,6 +139,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ slides }) => {
                     resource={desktopMedia}
                     fill
                     priority
+                    fetchPriority="high"
                     size="(max-width: 1024px) 100vw, 50vw"
                     imgClassName="object-cover border-2 border-primary/70 rounded-lg lg:rounded-none"
                   />
@@ -152,6 +153,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ slides }) => {
                         resource={desktopMedia}
                         fill
                         priority
+                        fetchPriority="high"
                         size="50vw"
                         imgClassName="object-cover border-2 border-primary/70"
                       />
@@ -165,6 +167,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ slides }) => {
                         resource={mobileMedia}
                         fill
                         priority
+                        fetchPriority="high"
                         size="100vw"
                         imgClassName="object-cover rounded-2xl border-2 border-primary/70"
                       />
