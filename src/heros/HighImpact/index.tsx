@@ -133,28 +133,44 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ slides }) => {
             >
               <div className="absolute inset-0 bg-primary/20 z-0" />
 
-              {/* Desktop */}
-              {desktopMedia && (
-                <div className="hidden md:block h-screen relative">
+              {desktopMedia === mobileMedia ? (
+                <div className="relative h-full w-full">
                   <Media
                     resource={desktopMedia}
                     fill
                     priority
-                    imgClassName="object-cover border-2 border-primary/70"
+                    size="(max-width: 1024px) 100vw, 50vw"
+                    imgClassName="object-cover border-2 border-primary/70 rounded-lg lg:rounded-none"
                   />
                 </div>
-              )}
+              ) : (
+                <>
+                  {/* Desktop */}
+                  {desktopMedia && (
+                    <div className="hidden md:block h-screen relative">
+                      <Media
+                        resource={desktopMedia}
+                        fill
+                        priority
+                        size="50vw"
+                        imgClassName="object-cover border-2 border-primary/70"
+                      />
+                    </div>
+                  )}
 
-              {/* Mobile */}
-              {mobileMedia && (
-                <div className="block md:hidden h-full relative">
-                  <Media
-                    resource={mobileMedia}
-                    fill
-                    priority
-                    imgClassName="object-cover rounded-2xl border-2 border-primary/70"
-                  />
-                </div>
+                  {/* Mobile */}
+                  {mobileMedia && (
+                    <div className="block md:hidden h-full relative">
+                      <Media
+                        resource={mobileMedia}
+                        fill
+                        priority
+                        size="100vw"
+                        imgClassName="object-cover rounded-2xl border-2 border-primary/70"
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </motion.div>
           </motion.div>
