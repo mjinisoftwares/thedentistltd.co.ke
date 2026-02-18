@@ -232,11 +232,3 @@ html[data-theme='dark'] {
     @apply bg-background text-foreground min-h-[100vh] flex flex-col;
   }
 }
-
-/* FOUC guard */
-html {
-  opacity: 0;
-}
-html[data-theme] {
-  opacity: initial;
-}

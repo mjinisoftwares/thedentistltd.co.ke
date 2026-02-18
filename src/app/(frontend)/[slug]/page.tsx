@@ -11,7 +11,7 @@ import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
-import ReviewsWidget from '@/components/GoogleReviews'
+import ReviewsWidget from '@/components/ReviewsWrapper'
 
 // -----------------------------
 // Static Params
