@@ -73,7 +73,7 @@ export function PartnersSlider({
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{title}</h2>
             )}
             {subtitle && (
-              <p className="mx-auto max-w-2xl text-lg text-muted-foreground">{subtitle}</p>
+              <p className="mx-auto max-w-3xl text-base text-muted-foreground">{subtitle}</p>
             )}
           </div>
         )}
