@@ -19,11 +19,9 @@ export const FeaturesBlockComponent: React.FC<FeaturesBlockProps> = ({
           {/* Left Column */}
           <div className="lg:col-span-2">
             <div className="md:pr-6 lg:pr-0">
-              {title && (
-                <h2 className="text-3xl font-semibold tracking-tight lg:text-4xl">{title}</h2>
-              )}
+              {title && <h2 className="text-3xl font-bold tracking-tight lg:text-4xl">{title}</h2>}
               {description && (
-                <p className="mt-4 text-lg text-muted-foreground leading-relaxed">{description}</p>
+                <p className="mt-4 text-base text-muted-foreground ">{description}</p>
               )}
             </div>
             <ul className="mt-6 divide-y border-y border-border">
