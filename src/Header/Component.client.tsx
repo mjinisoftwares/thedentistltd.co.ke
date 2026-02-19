@@ -49,7 +49,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
       <TopBar hidden={scrolled} />
 
       <header
-        className={`  fixed left-0 right-0 z-40 bg-background border-b transition-all duration-300 ${
+        className={`py-2  fixed left-0 right-0 z-40 bg-background border-b transition-all duration-300 ${
           scrolled ? 'top-0' : 'top-8'
         }`}
         {...(theme ? { 'data-theme': theme } : {})}
