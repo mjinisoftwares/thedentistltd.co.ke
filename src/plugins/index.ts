@@ -126,14 +126,10 @@ export const plugins: Plugin[] = [
 
   mcpPlugin({
     collections: {
-      posts: {
-        enabled: true,
-        description: 'Public blog post ',
-      },
-
       services: {
         enabled: true,
-        description: 'Public content for dental services offered',
+        description:
+          'Public content for dental services offered. Fields: title,slug,icon, summary, description-richText, SEO/meta',
       },
     },
   }),
