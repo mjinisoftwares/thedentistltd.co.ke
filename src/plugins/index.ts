@@ -12,6 +12,7 @@ import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { Page, Post, Service } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { mcpPlugin } from '@payloadcms/plugin-mcp'
 
 const generateTitle: GenerateTitle<Post | Page | Service> = ({ doc }) => {
   return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
@@ -120,6 +121,20 @@ export const plugins: Plugin[] = [
       region: process.env.S3_REGION || '',
       endpoint: process.env.S3_ENDPOINT || '',
       forcePathStyle: true,
+    },
+  }),
+
+  mcpPlugin({
+    collections: {
+      posts: {
+        enabled: true,
+        description: 'Public blog post ',
+      },
+
+      services: {
+        enabled: true,
+        description: 'Public content for dental services offered',
+      },
     },
   }),
 ]
