@@ -1102,13 +1102,27 @@ export interface TeamBlock {
   badge?: string | null;
   title: string;
   description: string;
-  /**
-   * Number of team members to display
-   */
-  limit?: number | null;
+  members: (number | Team)[];
   id?: string | null;
   blockName?: string | null;
   blockType: 'teamBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team".
+ */
+export interface Team {
+  id: number;
+  name: string;
+  position: string;
+  image: number | Media;
+  facebook?: string | null;
+  instagram?: string | null;
+  linkedin?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1232,23 +1246,6 @@ export interface MapBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'mapBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team".
- */
-export interface Team {
-  id: number;
-  name: string;
-  position: string;
-  image: number | Media;
-  facebook?: string | null;
-  instagram?: string | null;
-  linkedin?: string | null;
-  email?: string | null;
-  phone?: string | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1936,7 +1933,7 @@ export interface TeamBlockSelect<T extends boolean = true> {
   badge?: T;
   title?: T;
   description?: T;
-  limit?: T;
+  members?: T;
   id?: T;
   blockName?: T;
 }

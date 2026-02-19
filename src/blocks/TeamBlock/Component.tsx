@@ -1,41 +1,41 @@
-'use client'
-
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import type { TeamBlock as TeamBlockProps, Team } from '@/payload-types'
 import Image from 'next/image'
+import configPromise from '@payload-config'
+import { getPayload } from 'payload'
 
-type Props = TeamBlockProps
+export const TeamBlockComponent: React.FC<TeamBlockProps> = async (props) => {
+  const { badge = 'Team', title, description, members: memberRelations } = props
 
-export const TeamBlockComponent: React.FC<Props> = ({
-  badge = 'Team',
-  title,
-  description,
-  limit = 6,
-}) => {
-  const [members, setMembers] = useState<Team[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  let members: Team[] = []
 
-  useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        setIsLoading(true)
-        // Payload 3.0 pluralizes collection slugs by default for REST endpoints
-        const res = await fetch(`/api/teams?limit=${limit}&depth=1`)
-        if (!res.ok) throw new Error('Failed to fetch team members')
-        const data = await res.json()
-        setMembers(data.docs || [])
-      } catch (err) {
-        console.error('Failed to load team members:', err)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+  if (memberRelations && memberRelations.length > 0) {
+    const payload = await getPayload({ config: configPromise })
 
-    fetchMembers()
-  }, [limit])
+    const memberIds = memberRelations.map((member) => {
+      if (typeof member === 'object') return member.id
+      else return member
+    })
 
-  if (!isLoading && members.length === 0) {
+    const fetchedMembers = await payload.find({
+      collection: 'team',
+      depth: 1,
+      where: {
+        id: {
+          in: memberIds,
+        },
+      },
+      pagination: false,
+    })
+
+    // Sort the fetched members to match the order in memberIds
+    members = memberIds
+      .map((id) => fetchedMembers.docs.find((doc) => doc.id === id))
+      .filter((doc): doc is Team => doc !== undefined)
+  }
+
+  if (members.length === 0) {
     return null
   }
 
@@ -99,20 +99,22 @@ export const TeamBlockComponent: React.FC<Props> = ({
                         {member.position}
                       </span>
 
-                      <Link
-                        href={socialLink}
-                        className="group-hover:text-primary-600 dark:group-hover:text-primary-400 inline-block translate-y-8 text-sm tracking-wide opacity-0 transition-all duration-500 hover:underline group-hover:translate-y-0 group-hover:opacity-100"
-                      >
-                        {member.linkedin
-                          ? 'LinkedIn'
-                          : member.facebook
-                            ? 'Facebook'
-                            : member.instagram
-                              ? 'Instagram'
-                              : member.email
-                                ? 'Email'
-                                : 'Profile'}
-                      </Link>
+                      {socialLink !== '#' && (
+                        <Link
+                          href={socialLink}
+                          className="group-hover:text-primary-600 dark:group-hover:text-primary-400 inline-block translate-y-8 text-sm tracking-wide opacity-0 transition-all duration-500 hover:underline group-hover:translate-y-0 group-hover:opacity-100"
+                        >
+                          {member.linkedin
+                            ? 'LinkedIn'
+                            : member.facebook
+                              ? 'Facebook'
+                              : member.instagram
+                                ? 'Instagram'
+                                : member.email
+                                  ? 'Email'
+                                  : 'Profile'}
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>

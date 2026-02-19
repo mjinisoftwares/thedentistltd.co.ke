@@ -27,12 +27,12 @@ export const TeamBlock: Block = {
       required: true,
     },
     {
-      name: 'limit',
-      type: 'number',
-      defaultValue: 6,
-      admin: {
-        description: 'Number of team members to display',
-      },
+      name: 'members',
+      type: 'relationship',
+      relationTo: 'team',
+      hasMany: true,
+      required: true,
+      label: 'Select Team Members',
     },
   ],
 }

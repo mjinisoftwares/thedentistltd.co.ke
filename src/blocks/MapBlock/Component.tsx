@@ -14,7 +14,7 @@ import type { MapBlock as MapBlockProps } from '@/payload-types'
 import { Search, MapPin, Navigation } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
+const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.GOOGLE_MAPS_API_KEY || ''
 
 export const MapBlockComponent: React.FC<MapBlockProps> = ({
   mapId = 'bf51a910020fa25a',
@@ -29,6 +29,11 @@ export const MapBlockComponent: React.FC<MapBlockProps> = ({
     lat: defaultLat,
     lng: defaultLng,
   })
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   if (!API_KEY) {
     return (
@@ -42,6 +47,10 @@ export const MapBlockComponent: React.FC<MapBlockProps> = ({
         </p>
       </div>
     )
+  }
+
+  if (!isMounted) {
+    return <div style={{ height }} className="bg-muted border-y" />
   }
 
   return (
