@@ -28,7 +28,6 @@
     "@payloadcms/live-preview-react": "3.76.1",
     "@payloadcms/next": "3.76.1",
     "@payloadcms/plugin-form-builder": "3.76.1",
-    "@payloadcms/plugin-mcp": "3.76.1",
     "@payloadcms/plugin-nested-docs": "3.76.1",
     "@payloadcms/plugin-redirects": "3.76.1",
     "@payloadcms/plugin-search": "3.76.1",
