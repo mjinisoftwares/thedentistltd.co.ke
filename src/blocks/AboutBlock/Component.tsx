@@ -109,7 +109,7 @@ export const AboutBlockComponent: React.FC<Props> = ({
               </p>
             )}
 
-            <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8 ">
+            <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8">
               {companies.map((company, idx) => {
                 const logo = getMediaInfo(company.logo)
                 return (
