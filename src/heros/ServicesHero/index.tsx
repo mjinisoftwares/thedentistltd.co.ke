@@ -1,62 +1,61 @@
+'use client'
+
 import React from 'react'
+import { format } from 'date-fns'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { DynamicIcon, type IconName } from 'lucide-react/dynamic'
 import type { Service } from '@/payload-types'
 import { Media } from '@/components/Media'
+import { cn } from '@/utilities/utils'
 
-export const ServiceHero: React.FC<{
+interface ServiceHeroProps {
   service: Service
-}> = ({ service }) => {
-  const { hero, title } = service
+  className?: string
+}
+
+export const ServiceHero: React.FC<ServiceHeroProps> = ({ service, className }) => {
+  const { hero, title, summary, updatedAt, icon } = service
   const { heroImage, heroImageMobile, heroTitle, heroSubtitle } = hero || {}
 
   return (
-    <section className="w-full py-16 md:py-24 ">
+    <section className={cn('mt-32 mb-8', className)}>
       <div className="container">
-        <div className="relative rounded-3xl overflow-hidden">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 text-center">
+          {/* Title */}
+          <h1 className="mt-12 max-w-3xl text-5xl font-semibold text-pretty ">
+            {heroTitle || title}
+          </h1>
+
+          {/* Subtitle / Summary */}
+          <h3 className="max-w-3xl text-lg text-muted-foreground md:text-xl">
+            {heroSubtitle || summary}
+          </h3>
+
+          {/* Meta Row */}
+          <div className="flex items-center gap-3 text-sm md:text-base">
+            <Avatar className="h-8 w-8 border">
+              <AvatarFallback>{icon?.charAt(0) || 'S'}</AvatarFallback>
+            </Avatar>
+
+            <span className="flex items-center gap-2">
+              {icon && <DynamicIcon name={icon as IconName} className="h-4 w-4 text-primary" />}
+              <span className="font-semibold">The Dentist LTD</span>
+              <span className="ml-1 text-muted-foreground">
+                • Updated {format(new Date(updatedAt), 'MMMM d, yyyy')}
+              </span>
+            </span>
+          </div>
+
           {/* Hero Image */}
-          <div className="mt-8 relative h-[60vh] md:h-[80vh] w-full">
-            {heroImage && typeof heroImage !== 'string' && (
+          {heroImage && typeof heroImage !== 'string' && (
+            <div className="mt-4 aspect-video w-full overflow-hidden rounded-lg border">
               <Media
                 priority
-                imgClassName="hidden md:block object-cover w-full h-full"
-                resource={heroImage}
+                imgClassName="w-full h-full object-cover"
+                resource={heroImageMobile ?? heroImage}
               />
-            )}
-
-            {heroImageMobile && typeof heroImageMobile !== 'string' ? (
-              <Media
-                priority
-                imgClassName="block md:hidden object-cover w-full h-full"
-                resource={heroImageMobile}
-              />
-            ) : (
-              heroImage &&
-              typeof heroImage !== 'string' && (
-                <Media
-                  priority
-                  imgClassName="block md:hidden object-cover w-full h-auto"
-                  resource={heroImage}
-                />
-              )
-            )}
-
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-black/60" />
-          </div>
-
-          {/* Content */}
-          <div className="absolute inset-0 flex items-center">
-            <div className="mt-24 md:mt-12 px-6 md:px-16 max-w-4xl">
-              <h1 className="  text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight">
-                {heroTitle || title}
-              </h1>
-
-              {heroSubtitle && (
-                <p className="text-lg md:text-xl text-white/90 font-light max-w-2xl leading-relaxed">
-                  {heroSubtitle}
-                </p>
-              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>

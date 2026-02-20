@@ -49,21 +49,24 @@ export default async function ServicePage({ params: paramsPromise }: Args) {
   if (!service) return <PayloadRedirects url={url} />
 
   return (
-    <article className="">
+    <article>
       <PageClient />
 
-      {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
 
       {draft && <LivePreviewListener />}
 
+      {/* Hero */}
       <ServiceHero service={service} />
 
-      <div className="flex flex-col items-center gap-4 py-12">
+      {/* Content Section */}
+      <section className="pb-32">
         <div className="container">
-          <RichText className="max-w-[48rem] mx-auto" data={service.content} enableGutter={false} />
+          <div className="mx-auto prose max-w-3xl dark:prose-invert">
+            <RichText data={service.content} enableGutter={false} />
+          </div>
         </div>
-      </div>
+      </section>
     </article>
   )
 }
