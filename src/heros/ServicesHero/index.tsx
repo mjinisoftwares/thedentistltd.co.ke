@@ -9,7 +9,7 @@ export const ServiceHero: React.FC<{
   const { heroImage, heroImageMobile, heroTitle, heroSubtitle } = hero || {}
 
   return (
-    <section className="w-full py-16 md:py-24 mt-24">
+    <section className="w-full py-16 md:py-24 ">
       <div className="container">
         <div className="relative rounded-3xl overflow-hidden">
           {/* Hero Image */}
@@ -46,7 +46,7 @@ export const ServiceHero: React.FC<{
           {/* Content */}
           <div className="absolute inset-0 flex items-center">
             <div className="px-6 md:px-16 max-w-4xl">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight">
+              <h1 className="md:mt-16 text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight">
                 {heroTitle || title}
               </h1>
 
