@@ -1,11 +1,11 @@
 'use client'
+
 import { cn } from '@/utilities/ui'
 import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
 import React, { Fragment } from 'react'
 
 import type { Post, Service } from '@/payload-types'
-
 import { Media } from '@/components/Media'
 
 export type CardPostData =
@@ -39,47 +39,48 @@ export const Card: React.FC<{
       )}
       ref={card.ref}
     >
-      <div className="relative w-full ">
-        {!metaImage && <div className="">No image</div>}
-        {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
+      {/* Image Container with fixed aspect ratio */}
+      <div className="relative w-full aspect-[4/3] bg-gray-100">
+        {!metaImage && (
+          <div className="flex items-center justify-center h-full text-gray-500">No image</div>
+        )}
+        {metaImage && typeof metaImage !== 'string' && (
+          <Media
+            resource={metaImage}
+            className="absolute top-0 left-0 w-full h-full object-cover"
+          />
+        )}
       </div>
+
       <div className="p-4">
         {showCategories && hasCategories && (
-          <div className="uppercase text-sm mb-4">
-            {showCategories && hasCategories && (
-              <div>
-                {categories?.map((category, index) => {
-                  if (typeof category === 'object') {
-                    const { title: titleFromCategory } = category
-
-                    const categoryTitle = titleFromCategory || 'Untitled category'
-
-                    const isLast = index === categories.length - 1
-
-                    return (
-                      <Fragment key={index}>
-                        {categoryTitle}
-                        {!isLast && <Fragment>, &nbsp;</Fragment>}
-                      </Fragment>
-                    )
-                  }
-
-                  return null
-                })}
-              </div>
-            )}
+          <div className="uppercase text-sm mb-2">
+            {categories?.map((category, index) => {
+              if (typeof category === 'object') {
+                const { title: titleFromCategory } = category
+                const categoryTitle = titleFromCategory || 'Untitled category'
+                const isLast = index === categories.length - 1
+                return (
+                  <Fragment key={index}>
+                    {categoryTitle}
+                    {!isLast && ', '}
+                  </Fragment>
+                )
+              }
+              return null
+            })}
           </div>
         )}
+
         {titleToUse && (
-          <div className="prose">
-            <h3>
-              <Link className="not-prose" href={href} ref={link.ref}>
-                {titleToUse}
-              </Link>
-            </h3>
-          </div>
+          <h3 className="prose mb-2">
+            <Link className="not-prose" href={href} ref={link.ref}>
+              {titleToUse}
+            </Link>
+          </h3>
         )}
-        {description && <div className="mt-2">{description && <p>{sanitizedDescription}</p>}</div>}
+
+        {description && <p className="text-sm text-muted-foreground">{sanitizedDescription}</p>}
       </div>
     </article>
   )
