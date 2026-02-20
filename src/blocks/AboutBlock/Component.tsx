@@ -132,7 +132,7 @@ export const AboutBlockComponent: React.FC<Props> = ({
 
         <div className="mt-24 relative overflow-hidden rounded-3xl bg-primary text-primary-foreground p-8 md:p-20">
           {/* background decoration */}
-          <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 size-96 rounded-full bg-white/5 blur-3xl" />
+          <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 size-96 rounded-full bg-white blur-3xl" />
 
           <div className="relative z-10 flex flex-col gap-6 text-center md:text-left">
             <h2 className="text-3xl font-bold md:text-5xl">{achievementsTitle}</h2>
