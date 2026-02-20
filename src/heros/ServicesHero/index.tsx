@@ -33,7 +33,7 @@ export const ServiceHero: React.FC<{
               typeof heroImage !== 'string' && (
                 <Media
                   priority
-                  imgClassName="block md:hidden object-cover w-full h-full"
+                  imgClassName="block md:hidden object-cover w-full h-auto"
                   resource={heroImage}
                 />
               )
@@ -45,8 +45,8 @@ export const ServiceHero: React.FC<{
 
           {/* Content */}
           <div className="absolute inset-0 flex items-center">
-            <div className="px-6 md:px-16 max-w-4xl">
-              <h1 className="md:mt-16 text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight">
+            <div className="mt-24 md:mt-12 px-6 md:px-16 max-w-4xl">
+              <h1 className="  text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight">
                 {heroTitle || title}
               </h1>
 
