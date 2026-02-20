@@ -20,18 +20,41 @@ export const UsefulLinksBlock: Block = {
     },
 
     {
+      name: 'selectMethod',
+      type: 'select',
+      defaultValue: 'all',
+      options: [
+        { label: 'Show All (Dynamic)', value: 'all' },
+        { label: 'Manual Selection', value: 'manual' },
+      ],
+    },
+
+    {
+      name: 'links',
+      type: 'relationship',
+      relationTo: 'useful-links',
+      hasMany: true,
+      admin: {
+        condition: (_, siblingData) => siblingData.selectMethod === 'manual',
+      },
+    },
+
+    {
       name: 'limit',
       type: 'number',
       defaultValue: 8,
+      admin: {
+        condition: (_, siblingData) => siblingData.selectMethod === 'all',
+      },
     },
 
     {
       name: 'layout',
       type: 'select',
-      defaultValue: 'list',
+      defaultValue: 'grid',
       options: [
-        { label: 'List', value: 'list' },
         { label: 'Grid', value: 'grid' },
+        { label: 'List', value: 'list' },
       ],
     },
   ],

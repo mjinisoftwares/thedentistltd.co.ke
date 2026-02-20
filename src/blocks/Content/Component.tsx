@@ -4,7 +4,8 @@ import React from 'react'
 import { motion, Variants } from 'framer-motion'
 import { cn } from '@/utilities/ui'
 import RichText from '@/components/RichText'
-import { CMSLink } from '../../components/Link'
+import { CMSLink } from '@/components/Link'
+import { Media } from '@/components/Media'
 
 import type { ContentBlock as ContentBlockProps } from '@/payload-types'
 
@@ -14,32 +15,54 @@ const reveal: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.7,
-      delay: i * 0.12,
+      duration: 0.6,
+      delay: i * 0.1,
       ease: [0.22, 1, 0.36, 1],
     },
   }),
 }
 
-export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
-  const { columns } = props
+export const ContentBlock: React.FC<ContentBlockProps> = ({
+  sectionTitle,
+  sectionSubtitle,
+  cardStyle = 'soft',
+  columns,
+}) => {
+  const colsSpanClasses: Record<string, string> = {
+    full: 'lg:col-span-12',
+    half: 'lg:col-span-6',
+    oneThird: 'lg:col-span-4',
+    twoThirds: 'lg:col-span-8',
+  }
 
-  const colsSpanClasses = {
-    full: '12',
-    half: '6',
-    oneThird: '4',
-    twoThirds: '8',
+  const cardStyles: Record<string, string> = {
+    none: '',
+    soft: 'bg-muted/40 backdrop-blur-sm',
+    bordered: 'border bg-background',
+    elevated: 'border bg-background shadow-lg hover:shadow-xl',
   }
 
   return (
-    <section className="relative my-24">
-      {/* subtle background accent */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-muted/30 to-transparent" />
-
+    <section className="relative py-28">
       <div className="container">
-        <div className="grid grid-cols-4 gap-y-10 gap-x-8 lg:grid-cols-12 lg:gap-x-12">
+        {/* Section Header */}
+        {(sectionTitle || sectionSubtitle) && (
+          <div className="mx-auto mb-16 max-w-3xl text-center">
+            {sectionTitle && (
+              <h2 className="text-4xl font-semibold tracking-tight md:text-5xl">{sectionTitle}</h2>
+            )}
+            {sectionSubtitle && (
+              <p className="mt-4 text-lg text-muted-foreground">{sectionSubtitle}</p>
+            )}
+          </div>
+        )}
+
+        {/* Grid */}
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-12">
           {columns?.map((col, index) => {
-            const { enableLink, link, richText, size } = col
+            const { size, richText, enableLink, link, enableImage, image } = col
+            const safeSize = size || 'oneThird'
+            const safeCardStyle = cardStyle || 'soft'
 
             return (
               <motion.div
@@ -48,35 +71,42 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
                 variants={reveal}
                 initial="hidden"
                 whileInView="show"
-                viewport={{ once: true, margin: '-80px' }}
-                className={cn(
-                  `col-span-4 lg:col-span-${colsSpanClasses[size!]}`,
-                  size !== 'full' && 'md:col-span-2',
-                )}
+                viewport={{ once: true }}
+                className={cn('col-span-1', colsSpanClasses[safeSize])}
               >
-                {/* card wrapper */}
-                <div className="group relative h-full rounded-2xl border bg-background/80 p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                  {/* glow hover */}
-                  <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/10 via-transparent to-primary/10" />
-                  </div>
+                <div
+                  className={cn(
+                    'group h-full rounded-2xl p-6 transition-all duration-300',
+                    cardStyles[safeCardStyle],
+                    safeCardStyle !== 'none' && 'hover:-translate-y-1',
+                  )}
+                >
+                  {/* Optional Image */}
+                  {enableImage && image && (
+                    <div className="mb-6 overflow-hidden rounded-xl">
+                      <Media
+                        resource={image}
+                        className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
 
-                  <div className="relative z-10 space-y-5">
-                    {richText && (
-                      <div className="prose prose-neutral max-w-none dark:prose-invert">
-                        <RichText data={richText} enableGutter={false} />
-                      </div>
-                    )}
+                  {/* Rich Text */}
+                  {richText && (
+                    <div className="prose max-w-none dark:prose-invert">
+                      <RichText data={richText} enableGutter={false} />
+                    </div>
+                  )}
 
-                    {enableLink && link && (
-                      <div className="pt-2">
-                        <CMSLink
-                          {...link}
-                          className="inline-flex items-center gap-2 text-sm font-medium transition-all hover:gap-3"
-                        />
-                      </div>
-                    )}
-                  </div>
+                  {/* Optional Link */}
+                  {enableLink && link && (
+                    <div className="mt-6">
+                      <CMSLink
+                        {...link}
+                        className="text-sm font-medium text-primary transition hover:underline"
+                      />
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )

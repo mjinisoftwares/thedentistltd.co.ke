@@ -22,7 +22,7 @@ export const Logo = (props: Props) => {
       loading={loading}
       fetchPriority={priority}
       decoding="async"
-      className={clsx('max-w-[10rem] w-full h-auto', className)}
+      className={clsx('max-w-[9.4rem] w-full h-auto', className)}
       src="/logo.webp"
     />
   )

@@ -1,115 +1,133 @@
-'use client'
-
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
 import type {
   Page,
   UsefulLink,
   UsefulLinksBlock as UsefulLinksBlockProps,
 } from '../../payload-types'
 import { cn } from '@/utilities/ui'
+import { ChevronRight, ExternalLink } from 'lucide-react'
 
-export const UsefulLinksBlockComponent: React.FC<UsefulLinksBlockProps> = ({
+export const UsefulLinksBlockComponent: React.FC<UsefulLinksBlockProps> = async ({
   title,
   description,
+  selectMethod = 'all',
+  links: manualLinks,
   limit = 8,
-  layout = 'list',
+  layout = 'grid',
 }) => {
-  const [links, setLinks] = useState<UsefulLink[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  let links: UsefulLink[] = []
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        setIsLoading(true)
-        const res = await fetch(`/api/useful-links?limit=${limit}&sort=order&depth=1`)
-        const data = await res.json()
-        setLinks(data.docs || [])
-      } catch (error) {
-        console.error('Failed to fetch useful links:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+  const payload = await getPayload({ config: configPromise })
 
-    load()
-  }, [limit])
+  if (selectMethod === 'manual' && manualLinks && manualLinks.length > 0) {
+    // manualLinks can be an array of IDs or populated objects
+    const linkIds = manualLinks.map((link) => (typeof link === 'object' ? link.id : link))
 
-  if (!isLoading && links.length === 0 && !title && !description) return null
+    const fetchedLinks = await payload.find({
+      collection: 'useful-links',
+      depth: 1,
+      where: {
+        id: {
+          in: linkIds,
+        },
+      },
+      // Keep manual order
+      sort: 'order',
+    })
+
+    // Sort manual links based on the original selection order if needed,
+    // but here we trust Payload's order or the 'order' field.
+    links = fetchedLinks.docs
+    // Re-sort to match the manual selection order if order field is not used for that
+    links.sort((a, b) => linkIds.indexOf(a.id) - linkIds.indexOf(b.id))
+  } else if (selectMethod === 'all') {
+    const fetchedLinks = await payload.find({
+      collection: 'useful-links',
+      depth: 1,
+      limit: limit || 8,
+      sort: 'order',
+    })
+    links = fetchedLinks.docs
+  }
+
+  if (links.length === 0 && !title && !description) return null
 
   const isGrid = layout === 'grid'
 
   return (
-    <section className="py-24 md:py-32">
+    <section className="py-16 md:py-24 bg-background">
       <div className="container">
         {(title || description) && (
-          <div className="mb-12 max-w-2xl">
-            {title && <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{title}</h2>}
-            {description && <p className="mt-4 text-lg text-muted-foreground">{description}</p>}
+          <div className="mb-12 max-w-3xl">
+            {title && (
+              <h2 className="text-3xl font-bold tracking-tight md:text-5xl mb-4 text-foreground">
+                {title}
+              </h2>
+            )}
+            {description && (
+              <p className="text-lg text-muted-foreground leading-relaxed">{description}</p>
+            )}
           </div>
         )}
 
         <div
           className={cn(
-            'grid gap-4',
-            isGrid ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1',
+            'grid gap-6',
+            isGrid
+              ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+              : 'grid-cols-1 max-w-4xl',
           )}
         >
-          {isLoading
-            ? Array.from({ length: limit || 4 }).map((_, i) => (
-                <div key={i} className="h-20 animate-pulse rounded-xl bg-muted/50" />
-              ))
-            : links.map((link) => {
-                const page = typeof link.page === 'object' ? (link.page as Page) : null
-                const href = link.type === 'internal' ? `/${page?.slug || ''}` : link.url || '#'
-                const isInternal = link.type === 'internal'
+          {links.map((link) => {
+            const page = typeof link.page === 'object' ? (link.page as Page) : null
+            const isInternal = link.type === 'internal'
+            const href = isInternal ? `/${page?.slug || ''}` : link.url || '#'
 
-                const content = (
-                  <div className="flex h-full items-center justify-between p-5">
-                    <span className="font-medium">{link.title}</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-muted-foreground transition-transform group-hover:translate-x-1"
-                    >
-                      <path d="M5 12h14" />
-                      <path d="m12 5 7 7-7 7" />
-                    </svg>
-                  </div>
-                )
-
-                const className = cn(
-                  'group block rounded-xl border bg-card transition-all hover:border-primary/50 hover:shadow-md',
-                  !isGrid && 'max-w-2xl',
-                )
-
-                if (isInternal) {
-                  return (
-                    <Link key={link.id} href={href} className={className}>
-                      {content}
-                    </Link>
-                  )
+            const LinkWrapper = isInternal ? Link : 'a'
+            const externalProps = !isInternal
+              ? {
+                  target: link.newTab ? '_blank' : '_self',
+                  rel: 'noopener noreferrer',
                 }
+              : {}
 
-                return (
-                  <a
-                    key={link.id}
-                    href={href}
-                    target={link.newTab ? '_blank' : '_self'}
-                    rel="noopener noreferrer"
-                    className={className}
-                  >
-                    {content}
-                  </a>
-                )
-              })}
+            return (
+              <LinkWrapper
+                key={link.id}
+                href={href}
+                {...(externalProps as any)}
+                className={cn(
+                  'group flex flex-col h-full p-6 rounded-2xl border bg-card transition-all duration-300',
+                  'hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1',
+                  'focus:outline-none focus:ring-2 focus:ring-primary/20',
+                )}
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
+                    {isInternal ? <ChevronRight size={20} /> : <ExternalLink size={20} />}
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                  {link.title}
+                </h3>
+
+                {link.description && (
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed">
+                    {link.description}
+                  </p>
+                )}
+
+                <div className="mt-auto flex items-center text-sm font-medium text-primary opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+                  {isInternal ? 'Learn More' : 'Visit Website'}
+                  <ChevronRight size={16} className="ml-1" />
+                </div>
+              </LinkWrapper>
+            )
+          })}
         </div>
       </div>
     </section>

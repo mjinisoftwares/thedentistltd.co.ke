@@ -12,6 +12,7 @@ import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import ReviewsWidget from '@/components/ReviewsWrapper'
+import { GoogleMap } from '@/components/GoogleMap'
 
 // -----------------------------
 // Static Params
@@ -71,8 +72,8 @@ export default async function Page({ params: paramsPromise }: PageProps) {
 
       <RenderHero {...page.hero} />
       <RenderBlocks blocks={page.layout} />
-
       <ReviewsWidget />
+      <GoogleMap />
     </article>
   )
 }

@@ -17,6 +17,11 @@ export const UsefulLinks: CollectionConfig = {
     },
 
     {
+      name: 'description',
+      type: 'textarea',
+    },
+
+    {
       name: 'type',
       type: 'select',
       required: true,
@@ -39,6 +44,7 @@ export const UsefulLinks: CollectionConfig = {
 
     {
       name: 'url',
+      label: 'External URL',
       type: 'text',
       required: true,
       admin: {

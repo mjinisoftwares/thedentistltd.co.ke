@@ -536,9 +536,14 @@ export interface CallToActionBlock {
  * via the `definition` "ContentBlock".
  */
 export interface ContentBlock {
+  sectionTitle?: string | null;
+  sectionSubtitle?: string | null;
+  cardStyle?: ('none' | 'soft' | 'bordered' | 'elevated') | null;
   columns?:
     | {
         size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
+        enableImage?: boolean | null;
+        image?: (number | null) | Media;
         richText?: {
           root: {
             type: string;
@@ -1110,11 +1115,32 @@ export interface Team {
 export interface UsefulLinksBlock {
   title?: string | null;
   description?: string | null;
+  selectMethod?: ('all' | 'manual') | null;
+  links?: (number | UsefulLink)[] | null;
   limit?: number | null;
-  layout?: ('list' | 'grid') | null;
+  layout?: ('grid' | 'list') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'usefulLinksBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "useful-links".
+ */
+export interface UsefulLink {
+  id: number;
+  title: string;
+  description?: string | null;
+  type: 'internal' | 'external';
+  page?: (number | null) | Page;
+  url?: string | null;
+  newTab?: boolean | null;
+  /**
+   * Lower numbers appear first
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1225,24 +1251,6 @@ export interface MapBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'mapBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "useful-links".
- */
-export interface UsefulLink {
-  id: number;
-  title: string;
-  type: 'internal' | 'external';
-  page?: (number | null) | Page;
-  url?: string | null;
-  newTab?: boolean | null;
-  /**
-   * Lower numbers appear first
-   */
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1644,10 +1652,15 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
  * via the `definition` "ContentBlock_select".
  */
 export interface ContentBlockSelect<T extends boolean = true> {
+  sectionTitle?: T;
+  sectionSubtitle?: T;
+  cardStyle?: T;
   columns?:
     | T
     | {
         size?: T;
+        enableImage?: T;
+        image?: T;
         richText?: T;
         enableLink?: T;
         link?:
@@ -1864,6 +1877,8 @@ export interface TeamBlockSelect<T extends boolean = true> {
 export interface UsefulLinksBlockSelect<T extends boolean = true> {
   title?: T;
   description?: T;
+  selectMethod?: T;
+  links?: T;
   limit?: T;
   layout?: T;
   id?: T;
@@ -2157,6 +2172,7 @@ export interface TeamSelect<T extends boolean = true> {
  */
 export interface UsefulLinksSelect<T extends boolean = true> {
   title?: T;
+  description?: T;
   type?: T;
   page?: T;
   url?: T;
