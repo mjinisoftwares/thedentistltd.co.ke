@@ -1,28 +1,46 @@
+'use client'
+
+import React from 'react'
 import type { CallToActionBlock as CTABlockProps } from '@/payload-types'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 
-export default function CallToAction(_props: CTABlockProps) {
+import RichText from '@/components/RichText'
+import { CMSLink } from '@/components/Link'
+import { cn } from '@/utilities/ui'
+
+export const CallToAction: React.FC<CTABlockProps> = ({ richText, links }) => {
   return (
-    <section className="py-16">
-      <div className="mx-auto max-w-5xl rounded-3xl border px-6 py-12 md:py-20 lg:py-32">
-        <div className="text-center">
-          <h2 className="text-balance text-4xl font-semibold lg:text-5xl">Start Building</h2>
-          <p className="mt-4">Libero sapiente aliquam quibusdam aspernatur.</p>
+    <section className="relative py-24">
+      <div className="container">
+        <div
+          className={cn(
+            'mx-auto max-w-4xl rounded-3xl border bg-gradient-to-br from-primary/5 via-primary-20 to-secondary/30 px-8 py-16 text-center shadow-sm',
+            'md:px-16 md:py-20',
+          )}
+        >
+          {/* Content */}
+          {richText && (
+            <div className="mx-auto max-w-2xl prose dark:prose-invert">
+              <RichText
+                data={richText}
+                enableGutter={false}
+                className={cn(
+                  'prose-headings:font-semibold',
+                  'prose-h1:text-4xl md:prose-h1:text-5xl',
+                  'prose-h2:text-3xl md:prose-h2:text-4xl',
+                  'prose-p:text-muted-foreground prose-p:text-base md:prose-p:text-lg',
+                )}
+              />
+            </div>
+          )}
 
-          <div className="mt-12 flex flex-wrap justify-center gap-4">
-            <Button asChild size="lg">
-              <Link href="/">
-                <span>Get Started</span>
-              </Link>
-            </Button>
-
-            <Button asChild size="lg" variant="outline">
-              <Link href="/">
-                <span>Book Demo</span>
-              </Link>
-            </Button>
-          </div>
+          {/* Buttons */}
+          {links && links.length > 0 && (
+            <div className="mt-10 flex flex-wrap justify-center gap-4">
+              {links.map((link, i) => (
+                <CMSLink key={i} {...link} size="lg" className="min-w-[160px]" />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>
