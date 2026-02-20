@@ -15,7 +15,6 @@ export const Logo = (props: Props) => {
   const priority = priorityFromProps || 'low'
 
   return (
-     
     <Image
       alt="Payload Logo"
       width={193}
@@ -23,7 +22,7 @@ export const Logo = (props: Props) => {
       loading={loading}
       fetchPriority={priority}
       decoding="async"
-      className={clsx('max-w-[10.4rem] md:max-w-[11rem] w-full h-auto', className)}
+      className={clsx('max-w-[10.4rem] w-full h-auto', className)}
       src="/logo.webp"
     />
   )

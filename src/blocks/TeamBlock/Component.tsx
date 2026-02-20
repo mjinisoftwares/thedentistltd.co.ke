@@ -41,7 +41,7 @@ export const TeamBlockComponent: React.FC<TeamBlockProps> = async (props) => {
 
   return (
     <section className="bg-gray-50 py-16 md:py-32 dark:bg-transparent">
-      <div className="mx-auto max-w-5xl border-t px-6">
+      <div className="container mx-auto  border-t">
         <span className="text-caption -ml-6 -mt-3.5 block w-max bg-gray-50 px-6 dark:bg-gray-950">
           {badge}
         </span>
@@ -73,7 +73,7 @@ export const TeamBlockComponent: React.FC<TeamBlockProps> = async (props) => {
                   <div className="relative h-96 w-full overflow-hidden rounded-md transition-all duration-500 group-hover:h-[22.5rem] group-hover:rounded-xl">
                     {imageUrl ? (
                       <Image
-                        className="h-full w-full object-cover object-top grayscale transition-all duration-500 hover:grayscale-0"
+                        className="h-full w-full object-cover object-top transition-all duration-500 hover:grayscale"
                         src={imageUrl}
                         alt={member.name || 'Team member'}
                         width={826}
