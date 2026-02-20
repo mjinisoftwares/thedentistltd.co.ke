@@ -13,7 +13,7 @@ export const ServiceHero: React.FC<{
       <div className="container">
         <div className="relative rounded-3xl overflow-hidden">
           {/* Hero Image */}
-          <div className="relative h-[60vh] md:h-[80vh] w-full">
+          <div className="mt-8 relative h-[60vh] md:h-[80vh] w-full">
             {heroImage && typeof heroImage !== 'string' && (
               <Media
                 priority
