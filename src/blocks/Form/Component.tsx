@@ -100,7 +100,7 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
   )
 
   return (
-    <section className="relative mt-[-20%] py-24">
+    <section className="relative py-24">
       <div className="container">
         <div
           className={cn(
