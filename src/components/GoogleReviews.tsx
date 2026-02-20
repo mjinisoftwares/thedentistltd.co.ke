@@ -38,7 +38,7 @@ export default function ReviewsWidget() {
         ref={sectionRef}
         className="w-full overflow-hidden bg-gradient-to-b from-transparent via-primary/5 to-transparent border-t border-border/50 py-24"
       >
-        <div className="container px-4 mx-auto">
+        <div className="container mx-auto">
           <div className="relative z-10 mx-auto max-w-3xl text-center mb-16">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -46,7 +46,7 @@ export default function ReviewsWidget() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
             >
-              <h2 className="text-3xl font-bold md:text-5xl text-foreground mb-6 tracking-tight">
+              <h2 className="text-3xl font-bold md:text-5xl text-foreground mb-2 tracking-tight">
                 What Our Clients Say
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">

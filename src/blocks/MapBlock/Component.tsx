@@ -5,8 +5,6 @@ import { APIProvider, AdvancedMarker, Map } from '@vis.gl/react-google-maps'
 import type { MapBlock as MapBlockProps } from '@/payload-types'
 import { MapPin } from 'lucide-react'
 
-const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
-
 export const MapBlockComponent: React.FC<MapBlockProps> = ({
   mapId = 'bf51a910020fa25a',
   defaultLat = -0.291398,
@@ -14,6 +12,7 @@ export const MapBlockComponent: React.FC<MapBlockProps> = ({
   defaultZoom = 16,
   height: heightProp,
 }) => {
+  const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
   const height = heightProp || '500px'
   const [isMounted, setIsMounted] = useState(false)
 
