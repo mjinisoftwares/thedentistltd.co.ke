@@ -11,6 +11,8 @@ import { fields } from './fields'
 import { getClientSideURL } from '@/utilities/getURL'
 import { cn } from '@/utilities/ui'
 import Image from 'next/image'
+import type { Media } from '@/payload-types'
+import { CheckCircle2, Loader2 } from 'lucide-react'
 
 export type FormBlockType = {
   blockName?: string
@@ -18,6 +20,10 @@ export type FormBlockType = {
   enableIntro: boolean
   form: FormType
   introContent?: DefaultTypedEditorState
+  image?: Media | number
+  imageAlt?: string
+  title?: string
+  description?: string
 }
 
 export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
@@ -26,6 +32,10 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
     form: formFromProps,
     form: { id: formID, confirmationMessage, confirmationType, redirect, submitButtonLabel } = {},
     introContent,
+    image,
+    imageAlt,
+    title,
+    description,
   } = props
 
   const formMethods = useForm({
@@ -111,14 +121,20 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
           <div className="grid lg:grid-cols-2">
             {/* LEFT — Image with Luxury Effects */}
             <div className="group relative hidden lg:block overflow-hidden">
-              <Image
-                src="/patient1.webp"
-                alt="Dental Clinic"
-                width={900}
-                height={900}
-                className="h-full w-full object-cover transition-transform duration-[2000ms] ease-out group-hover:scale-105"
-                priority
-              />
+              {image && typeof image === 'object' && image.url ? (
+                <Image
+                  src={image.url}
+                  alt={imageAlt || image.alt || title || 'Form Image'}
+                  width={image.width || 1200}
+                  height={image.height || 1200}
+                  className="h-full w-full object-cover transition-transform duration-[2000ms] ease-out group-hover:scale-105"
+                  priority
+                />
+              ) : (
+                <div className="h-full w-full bg-muted flex items-center justify-center">
+                  <p className="text-muted-foreground">Upload image in CMS</p>
+                </div>
+              )}
 
               {/* Premium Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-black/10 to-transparent" />
@@ -128,6 +144,20 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
             <div className="relative p-10 md:p-14">
               {/* Decorative Accent Line */}
               <div className="mb-6 h-1 w-16 rounded-full bg-primary" />
+
+              {/* Section Header */}
+              {(title || description) && (
+                <div className="mb-8 space-y-3">
+                  {title && (
+                    <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+                      {title}
+                    </h2>
+                  )}
+                  {description && (
+                    <p className="text-base text-muted-foreground leading-relaxed">{description}</p>
+                  )}
+                </div>
+              )}
 
               {/* Intro */}
               {enableIntro && introContent && !hasSubmitted && (
@@ -143,16 +173,20 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
               <FormProvider {...formMethods}>
                 {/* SUCCESS STATE */}
                 {!isLoading && hasSubmitted && confirmationType === 'message' && (
-                  <div className="py-16 text-center animate-in fade-in duration-500">
-                    <div className="mb-6 text-4xl">✓</div>
-                    <RichText data={confirmationMessage} />
+                  <div className="py-16 text-center animate-in fade-in zoom-in-95 duration-500">
+                    <CheckCircle2 className="mx-auto mb-6 h-16 w-16 text-green-500" />
+                    <RichText
+                      data={confirmationMessage}
+                      className="prose max-w-none dark:prose-invert"
+                    />
                   </div>
                 )}
 
                 {/* LOADING STATE */}
                 {isLoading && !hasSubmitted && (
-                  <div className="py-12 text-center text-muted-foreground animate-pulse">
-                    Processing your request...
+                  <div className="py-20 flex flex-col items-center justify-center space-y-4 animate-in fade-in duration-300">
+                    <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                    <p className="text-muted-foreground font-medium">Processing your request...</p>
                   </div>
                 )}
 
@@ -201,7 +235,7 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
                       >
                         {isLoading ? (
                           <span className="flex items-center justify-center gap-2">
-                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                            <Loader2 className="h-4 w-4 animate-spin" />
                             Submitting...
                           </span>
                         ) : (
