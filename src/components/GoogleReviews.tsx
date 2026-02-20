@@ -36,9 +36,9 @@ export default function ReviewsWidget() {
     <>
       <section
         ref={sectionRef}
-        className="w-full overflow-hidden bg-gradient-to-b from-transparent via-primary/5 to-transparent border-t border-border/50 py-24"
+        className="container mx-auto overflow-hidden bg-gradient-to-b from-transparent via-primary/5 to-transparent border-t border-border/50 py-24"
       >
-        <div className="container mx-auto">
+        <div className="">
           <div className="relative z-10 mx-auto max-w-3xl text-center mb-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}

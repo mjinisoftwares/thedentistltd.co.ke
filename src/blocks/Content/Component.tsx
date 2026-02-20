@@ -43,11 +43,11 @@ export const ContentBlock: React.FC<ContentBlockProps> = ({
   }
 
   return (
-    <section className="relative py-28">
+    <section className="relative py-28 border-t border-border">
       <div className="container">
         {/* Section Header */}
         {(sectionTitle || sectionSubtitle) && (
-          <div className="mx-auto mb-16 max-w-3xl text-center">
+          <div className="mx-auto mb-6 max-w-3xl text-center">
             {sectionTitle && (
               <h2 className="text-4xl font-semibold tracking-tight md:text-5xl">{sectionTitle}</h2>
             )}
@@ -58,7 +58,7 @@ export const ContentBlock: React.FC<ContentBlockProps> = ({
         )}
 
         {/* Grid */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12">
           {columns?.map((col, index) => {
             const { size, richText, enableLink, link, enableImage, image } = col
             const safeSize = size || 'oneThird'
@@ -76,14 +76,14 @@ export const ContentBlock: React.FC<ContentBlockProps> = ({
               >
                 <div
                   className={cn(
-                    'group h-full rounded-2xl p-6 transition-all duration-300',
+                    'group h-full rounded-xl transition-all duration-300',
                     cardStyles[safeCardStyle],
                     safeCardStyle !== 'none' && 'hover:-translate-y-1',
                   )}
                 >
                   {/* Optional Image */}
                   {enableImage && image && (
-                    <div className="mb-6 overflow-hidden rounded-xl">
+                    <div className="mb-4 overflow-hidden rounded-xl">
                       <Media
                         resource={image}
                         className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -94,7 +94,16 @@ export const ContentBlock: React.FC<ContentBlockProps> = ({
                   {/* Rich Text */}
                   {richText && (
                     <div className="prose max-w-none dark:prose-invert">
-                      <RichText data={richText} enableGutter={false} />
+                      <RichText
+                        data={richText}
+                        enableGutter={false}
+                        className={cn(
+                          'prose-h1:font-bold prose-h1:text-2xl md:prose-h1:text-4xl prose-h1:leading-tight prose-h1:mb-0',
+                          'prose-h2:font-bold prose-h2:text-2xl prose-h2:text-foreground mb-0',
+                          'prose-h3:font-medium prose-h3:text-xl prose-h3:text-primary prose-h3:mt-2',
+                          'prose-p:max-w-xl prose-p:text-muted-foreground prose-p:text-sm md:prose-p:text-base',
+                        )}
+                      />
                     </div>
                   )}
 

@@ -17,12 +17,12 @@ export const Logo = (props: Props) => {
   return (
     <Image
       alt="Payload Logo"
-      width={193}
-      height={34}
+      width={190}
+      height={32}
       loading={loading}
       fetchPriority={priority}
       decoding="async"
-      className={clsx('max-w-[9.4rem] w-full h-auto', className)}
+      className={clsx('max-w-[9rem] w-full h-auto', className)}
       src="/logo.webp"
     />
   )

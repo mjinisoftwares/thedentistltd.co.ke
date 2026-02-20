@@ -47,15 +47,5 @@ export const UsefulLinksBlock: Block = {
         condition: (_, siblingData) => siblingData.selectMethod === 'all',
       },
     },
-
-    {
-      name: 'layout',
-      type: 'select',
-      defaultValue: 'grid',
-      options: [
-        { label: 'Grid', value: 'grid' },
-        { label: 'List', value: 'list' },
-      ],
-    },
   ],
 }

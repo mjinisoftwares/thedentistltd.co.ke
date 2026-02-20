@@ -46,7 +46,7 @@ export const TeamBlockComponent: React.FC<TeamBlockProps> = async (props) => {
           {badge}
         </span>
 
-        <div className="mt-12 gap-4 sm:grid sm:grid-cols-2 md:mt-24">
+        <div className="mt-4s gap-4 sm:grid sm:grid-cols-2 md:mt-24">
           <div className="sm:w-2/5">
             <h2 className="text-3xl font-bold sm:text-4xl">{title}</h2>
           </div>
@@ -70,7 +70,7 @@ export const TeamBlockComponent: React.FC<TeamBlockProps> = async (props) => {
 
               return (
                 <div key={member.id} className="group overflow-hidden">
-                  <div className="relative h-96 w-full overflow-hidden rounded-md transition-all duration-500 group-hover:h-[22.5rem] group-hover:rounded-xl">
+                  <div className="relative h-85 w-full overflow-hidden rounded-md transition-all duration-500 group-hover:h-[20rem] group-hover:rounded-xl border-primary">
                     {imageUrl ? (
                       <Image
                         className="h-full w-full object-cover object-top transition-all duration-500 hover:grayscale"
@@ -88,7 +88,7 @@ export const TeamBlockComponent: React.FC<TeamBlockProps> = async (props) => {
 
                   <div className="px-2 pt-2 sm:pb-0 sm:pt-4">
                     <div className="flex justify-between">
-                      <h3 className="text-base font-medium transition-all duration-500 group-hover:tracking-wider">
+                      <h3 className="text-lg font-semibold transition-all duration-500 group-hover:tracking-wider">
                         {member.name}
                       </h3>
                       <span className="text-xs text-muted-foreground">_0{index + 1}</span>

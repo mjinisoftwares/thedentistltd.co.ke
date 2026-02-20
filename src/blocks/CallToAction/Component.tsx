@@ -1,23 +1,30 @@
-import React from 'react'
-
 import type { CallToActionBlock as CTABlockProps } from '@/payload-types'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
-import RichText from '@/components/RichText'
-import { CMSLink } from '@/components/Link'
-
-export const CallToActionBlock: React.FC<CTABlockProps> = ({ links, richText }) => {
+export default function CallToAction(_props: CTABlockProps) {
   return (
-    <div className="container">
-      <div className="bg-card rounded border-border border p-4 flex flex-col gap-8 md:flex-row md:justify-between md:items-center">
-        <div className="max-w-[48rem] flex items-center">
-          {richText && <RichText className="mb-0" data={richText} enableGutter={false} />}
-        </div>
-        <div className="flex flex-col gap-8">
-          {(links || []).map(({ link }, i) => {
-            return <CMSLink key={i} size="lg" {...link} />
-          })}
+    <section className="py-16">
+      <div className="mx-auto max-w-5xl rounded-3xl border px-6 py-12 md:py-20 lg:py-32">
+        <div className="text-center">
+          <h2 className="text-balance text-4xl font-semibold lg:text-5xl">Start Building</h2>
+          <p className="mt-4">Libero sapiente aliquam quibusdam aspernatur.</p>
+
+          <div className="mt-12 flex flex-wrap justify-center gap-4">
+            <Button asChild size="lg">
+              <Link href="/">
+                <span>Get Started</span>
+              </Link>
+            </Button>
+
+            <Button asChild size="lg" variant="outline">
+              <Link href="/">
+                <span>Book Demo</span>
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }

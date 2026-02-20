@@ -1118,7 +1118,6 @@ export interface UsefulLinksBlock {
   selectMethod?: ('all' | 'manual') | null;
   links?: (number | UsefulLink)[] | null;
   limit?: number | null;
-  layout?: ('grid' | 'list') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'usefulLinksBlock';
@@ -1880,7 +1879,6 @@ export interface UsefulLinksBlockSelect<T extends boolean = true> {
   selectMethod?: T;
   links?: T;
   limit?: T;
-  layout?: T;
   id?: T;
   blockName?: T;
 }

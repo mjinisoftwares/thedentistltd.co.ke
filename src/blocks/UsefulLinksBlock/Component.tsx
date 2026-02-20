@@ -8,7 +8,7 @@ import type {
   UsefulLinksBlock as UsefulLinksBlockProps,
 } from '../../payload-types'
 import { cn } from '@/utilities/ui'
-import { ChevronRight, ExternalLink } from 'lucide-react'
+import { ArrowRight, ExternalLink, Link2 } from 'lucide-react'
 
 export const UsefulLinksBlockComponent: React.FC<UsefulLinksBlockProps> = async ({
   title,
@@ -16,14 +16,12 @@ export const UsefulLinksBlockComponent: React.FC<UsefulLinksBlockProps> = async 
   selectMethod = 'all',
   links: manualLinks,
   limit = 8,
-  layout = 'grid',
 }) => {
   let links: UsefulLink[] = []
 
   const payload = await getPayload({ config: configPromise })
 
   if (selectMethod === 'manual' && manualLinks && manualLinks.length > 0) {
-    // manualLinks can be an array of IDs or populated objects
     const linkIds = manualLinks.map((link) => (typeof link === 'object' ? link.id : link))
 
     const fetchedLinks = await payload.find({
@@ -34,14 +32,10 @@ export const UsefulLinksBlockComponent: React.FC<UsefulLinksBlockProps> = async 
           in: linkIds,
         },
       },
-      // Keep manual order
       sort: 'order',
     })
 
-    // Sort manual links based on the original selection order if needed,
-    // but here we trust Payload's order or the 'order' field.
     links = fetchedLinks.docs
-    // Re-sort to match the manual selection order if order field is not used for that
     links.sort((a, b) => linkIds.indexOf(a.id) - linkIds.indexOf(b.id))
   } else if (selectMethod === 'all') {
     const fetchedLinks = await payload.find({
@@ -55,32 +49,21 @@ export const UsefulLinksBlockComponent: React.FC<UsefulLinksBlockProps> = async 
 
   if (links.length === 0 && !title && !description) return null
 
-  const isGrid = layout === 'grid'
-
   return (
-    <section className="py-16 md:py-24 bg-background">
-      <div className="container">
-        {(title || description) && (
-          <div className="mb-12 max-w-3xl">
+    <section className="py-12 md:py-16 bg-background/50">
+      <div className="container max-w-6xl">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+          <div className="max-w-2xl">
             {title && (
-              <h2 className="text-3xl font-bold tracking-tight md:text-5xl mb-4 text-foreground">
+              <h2 className="text-2xl font-bold tracking-tight md:text-3xl mb-2 text-foreground">
                 {title}
               </h2>
             )}
-            {description && (
-              <p className="text-lg text-muted-foreground leading-relaxed">{description}</p>
-            )}
+            {description && <p className="text-base text-muted-foreground">{description}</p>}
           </div>
-        )}
+        </div>
 
-        <div
-          className={cn(
-            'grid gap-6',
-            isGrid
-              ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-              : 'grid-cols-1 max-w-4xl',
-          )}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {links.map((link) => {
             const page = typeof link.page === 'object' ? (link.page as Page) : null
             const isInternal = link.type === 'internal'
@@ -98,33 +81,35 @@ export const UsefulLinksBlockComponent: React.FC<UsefulLinksBlockProps> = async 
               <LinkWrapper
                 key={link.id}
                 href={href}
-                {...(externalProps as any)}
+                {...externalProps}
                 className={cn(
-                  'group flex flex-col h-full p-6 rounded-2xl border bg-card transition-all duration-300',
-                  'hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1',
+                  'group relative flex items-center justify-between p-4 rounded-xl border bg-card/30 backdrop-blur-sm transition-all duration-300',
+                  'hover:bg-background hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5',
                   'focus:outline-none focus:ring-2 focus:ring-primary/20',
                 )}
               >
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
-                    {isInternal ? <ChevronRight size={20} /> : <ExternalLink size={20} />}
+                <div className="flex items-center gap-4 overflow-hidden">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500 ease-out">
+                    {isInternal ? <Link2 size={18} /> : <ExternalLink size={18} />}
+                  </div>
+                  <div className="flex flex-col overflow-hidden">
+                    <span className="font-semibold text-foreground truncate group-hover:text-primary transition-colors duration-300">
+                      {link.title}
+                    </span>
+                    {link.description && (
+                      <span className="text-xs text-muted-foreground truncate opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+                        {link.description}
+                      </span>
+                    )}
                   </div>
                 </div>
-
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                  {link.title}
-                </h3>
-
-                {link.description && (
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed">
-                    {link.description}
-                  </p>
-                )}
-
-                <div className="mt-auto flex items-center text-sm font-medium text-primary opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
-                  {isInternal ? 'Learn More' : 'Visit Website'}
-                  <ChevronRight size={16} className="ml-1" />
+                <div className="flex-shrink-0 ml-2">
+                  <ArrowRight
+                    size={18}
+                    className="text-primary opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out"
+                  />
                 </div>
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               </LinkWrapper>
             )
           })}
