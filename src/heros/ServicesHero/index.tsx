@@ -22,7 +22,7 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({ service, className }) 
       <div className="container">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 text-center">
           {/* Title */}
-          <h1 className="mt-12 max-w-3xl text-5xl font-semibold text-pretty ">
+          <h1 className="mt-12 max-w-3xl text-4xl font-semibold text-pretty ">
             {heroTitle || title}
           </h1>
 
