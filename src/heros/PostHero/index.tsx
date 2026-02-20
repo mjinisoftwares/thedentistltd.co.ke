@@ -1,9 +1,11 @@
-import { formatDateTime } from 'src/utilities/formatDateTime'
+'use client'
+
 import React from 'react'
-
+import { format } from 'date-fns'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { Post } from '@/payload-types'
-
 import { Media } from '@/components/Media'
+import { cn } from '@/utilities/ui'
 import { formatAuthors } from '@/utilities/formatAuthors'
 
 export const PostHero: React.FC<{
@@ -11,63 +13,68 @@ export const PostHero: React.FC<{
 }> = ({ post }) => {
   const { categories, heroImage, populatedAuthors, publishedAt, title } = post
 
-  const hasAuthors =
-    populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
+  const authorsToUse = (populatedAuthors || []).filter(
+    (author): author is NonNullable<NonNullable<Post['populatedAuthors']>[number]> =>
+      typeof author === 'object' && author !== null,
+  )
+
+  const authorsString = formatAuthors(authorsToUse) || ''
+  const hasAuthors = authorsString.length > 0
 
   return (
-    <div className="relative -mt-[10.4rem] flex items-end">
-      <div className="container z-10 relative lg:grid lg:grid-cols-[1fr_48rem_1fr] text-white pb-8">
-        <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
-          <div className="uppercase text-sm mb-6">
-            {categories?.map((category, index) => {
-              if (typeof category === 'object' && category !== null) {
-                const { title: categoryTitle } = category
+    <section className={cn('mt-32 mb-8')}>
+      <div className="container">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 text-center">
+          {/* Categories */}
+          {categories && categories.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
+              {categories.map((category, index) => {
+                if (typeof category === 'object' && category !== null) {
+                  return (
+                    <span
+                      key={index}
+                      className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary"
+                    >
+                      {category.title}
+                    </span>
+                  )
+                }
+                return null
+              })}
+            </div>
+          )}
 
-                const titleToUse = categoryTitle || 'Untitled category'
+          {/* Title */}
+          <h1 className="mt-4 max-w-4xl text-4xl font-semibold text-pretty md:text-5xl lg:text-6xl">
+            {title}
+          </h1>
 
-                const isLast = index === categories.length - 1
+          {/* Meta Row */}
+          <div className="flex items-center gap-3 text-sm md:text-base">
+            <Avatar className="h-8 w-8 border">
+              <AvatarFallback>{hasAuthors ? authorsString.charAt(0) : 'D'}</AvatarFallback>
+            </Avatar>
 
-                return (
-                  <React.Fragment key={index}>
-                    {titleToUse}
-                    {!isLast && <React.Fragment>, &nbsp;</React.Fragment>}
-                  </React.Fragment>
-                )
-              }
-              return null
-            })}
+            <span className="flex items-center gap-2">
+              <span className="font-semibold">
+                {hasAuthors ? authorsString : 'The Dentist LTD'}
+              </span>
+              {publishedAt && (
+                <span className="ml-1 text-muted-foreground">
+                  • Published {format(new Date(publishedAt), 'MMMM d, yyyy')}
+                </span>
+              )}
+            </span>
           </div>
 
-          <div className="">
-            <h1 className="mb-6 text-3xl md:text-5xl lg:text-6xl">{title}</h1>
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-4 md:gap-16">
-            {hasAuthors && (
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm">Author</p>
-
-                  <p>{formatAuthors(populatedAuthors)}</p>
-                </div>
-              </div>
-            )}
-            {publishedAt && (
-              <div className="flex flex-col gap-1">
-                <p className="text-sm">Date Published</p>
-
-                <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
-              </div>
-            )}
-          </div>
+          {/* Hero Image */}
+          {heroImage && typeof heroImage !== 'string' && (
+            <div className="mt-8 aspect-video w-full overflow-hidden rounded-lg border">
+              <Media priority imgClassName="w-full h-full object-cover" resource={heroImage} />
+            </div>
+          )}
         </div>
       </div>
-      <div className="min-h-[80vh] select-none">
-        {heroImage && typeof heroImage !== 'string' && (
-          <Media fill priority imgClassName="-z-10 object-cover" resource={heroImage} />
-        )}
-        <div className="absolute pointer-events-none left-0 bottom-0 w-full h-1/2 bg-linear-to-t from-black to-transparent" />
-      </div>
-    </div>
+    </section>
   )
 }

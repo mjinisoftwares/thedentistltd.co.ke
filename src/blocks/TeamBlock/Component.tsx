@@ -70,7 +70,7 @@ export const TeamBlockComponent: React.FC<TeamBlockProps> = async (props) => {
 
               return (
                 <div key={member.id} className="group overflow-hidden">
-                  <div className="relative h-85 w-full overflow-hidden rounded-md transition-all duration-500 group-hover:h-[20rem] group-hover:rounded-xl border-primary">
+                  <div className="relative h-85 w-full overflow-hidden rounded-md transition-all duration-500 group-hover:h-[20rem] group-hover:rounded-xl border border-primary">
                     {imageUrl ? (
                       <Image
                         className="h-full w-full object-cover object-top transition-all duration-500 hover:grayscale"
