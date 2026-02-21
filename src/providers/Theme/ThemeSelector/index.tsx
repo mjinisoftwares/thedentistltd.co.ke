@@ -9,7 +9,7 @@ export function ThemeSelector() {
 
   return (
     <Button
-      variant="outline"
+      variant="default"
       size="icon"
       aria-label="Toggle theme"
       onClick={toggleTheme}
