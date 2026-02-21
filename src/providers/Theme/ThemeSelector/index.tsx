@@ -13,7 +13,7 @@ export function ThemeSelector() {
       size="icon"
       aria-label="Toggle theme"
       onClick={toggleTheme}
-      className=" hover:bg-secondary hover:text-primary cursor-pointer"
+      className="text-white hover:bg-secondary hover:text-primary cursor-pointer"
     >
       {theme === 'dark' ? (
         <Sun className="h-5 w-5 text-primary dark:text-white" />
