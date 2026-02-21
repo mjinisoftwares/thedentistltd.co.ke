@@ -1,7 +1,7 @@
 {
-  "name": "payloadcms-template",
+  "name": "The Dentist Ltd",
   "version": "1.0.0",
-  "description": "Website template for Payload",
+  "description": "Top Dental Clinic in Nakuru, Kenya",
   "license": "MIT",
   "type": "module",
   "scripts": {
