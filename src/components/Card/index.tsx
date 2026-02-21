@@ -96,7 +96,7 @@ export const Card: React.FC<{
       <div className="flex flex-col flex-grow p-6">
         <div className="flex-grow">
           {titleToUse && (
-            <h3 className="text-xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors duration-300">
+            <h3 className="text-lg font-semibold mb-3 group-hover:text-primary transition-colors duration-300">
               <Link className="not-prose" href={href} ref={link.ref}>
                 {titleToUse}
               </Link>
