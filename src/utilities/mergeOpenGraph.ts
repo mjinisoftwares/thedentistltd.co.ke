@@ -6,11 +6,11 @@ const defaultOpenGraph: Metadata['openGraph'] = {
   description: 'An open-source website built with Payload and Next.js.',
   images: [
     {
-      url: `${getServerSideURL()}/website-template-OG.webp`,
+      url: `${getServerSideURL()}/dentist.webp`,
     },
   ],
-  siteName: 'Payload Website Template',
-  title: 'Payload Website Template',
+  siteName: 'The Dentist Ltd',
+  title: 'The Dentist Ltd',
 }
 
 export const mergeOpenGraph = (og?: Metadata['openGraph']): Metadata['openGraph'] => {
