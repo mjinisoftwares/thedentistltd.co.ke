@@ -73,8 +73,8 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
             </div>
 
             <Link
-              href="/book-appointment"
-              className="hidden lg:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg"
+              href="/contact"
+              className="hidden lg:inline-flex items-center gap-2 px-4 py-3 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg"
             >
               <Calendar className="w-4 h-4" />
               Book Appointment
