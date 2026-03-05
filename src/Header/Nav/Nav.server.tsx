@@ -55,10 +55,10 @@ export function DesktopNav({ items }: DesktopNavProps) {
             href={getHref(item)}
             target={getTarget(item)}
             rel={getRel(item)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-foreground/80 hover:text-foreground rounded-lg hover:bg-accent/50 transition-all duration-200"
+            className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-foreground/80 hover:text-white rounded-lg hover:bg-secondary/10 transition-all duration-200"
           >
             {item.label}
-            {item.newTab && <ExternalLink className="w-3.5 h-3.5 opacity-70" />}
+            {item.newTab && <ExternalLink className="w-3.5 h-3.5 opacity-80" />}
           </Link>
         )
       })}
