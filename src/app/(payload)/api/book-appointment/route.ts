@@ -39,21 +39,49 @@ export async function POST(req: Request) {
         to: clientEmail,
         subject: 'Appointment Request Received',
         html: `
-          <div style="font-family:Arial;padding:20px">
-            <h2>Hello ${clientName},</h2>
-            <p>
-              Thank you for booking an appointment with us. 
-              We have received your request and our team will contact you shortly to confirm your appointment.
-            </p>
+<div style="font-family: Arial, Helvetica, sans-serif; background:#f6f7fb; padding:40px 20px;">
+  <div style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:10px;padding:30px;border:1px solid #e5e7eb;">
+    
+    <h2 style="margin-top:0;color:primary;">
+      Hello ${clientName},
+    </h2>
 
-            <p><strong>Your submitted details:</strong></p>
+    <p style="color:#374151;font-size:15px;line-height:1.6;">
+      Thank you for booking an appointment with <strong>The Dentist LTD</strong>.  
+      We have successfully received your request and a member of our team will contact you shortly to confirm your appointment details.
+    </p>
 
-            ${htmlFields}
+    <div style="margin:25px 0;padding:20px;background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb;">
+      <h3 style="margin-top:0;color:primary;font-size:16px;">
+        Your Submitted Details
+      </h3>
 
-            <br/>
-            <p>Best regards,<br/>Team</p>
-          </div>
-        `,
+      ${htmlFields}
+    </div>
+
+    <p style="color:#374151;font-size:14px;line-height:1.6;">
+      If you need to update or cancel your appointment, please contact us and we will gladly assist you.
+    </p>
+
+    <p style="margin-top:30px;color:#374151;font-size:14px;">
+      Best regards,<br/>
+      <strong>The Dentist LTD Team</strong><br/>
+      Nakuru, Kenya
+      <br/>
+      Tel: 0734 003 111
+      <br/>info@thedentistltd.co.ke
+
+      
+      <br/>
+      <a href="https://www.thedentistltd.co.ke" style="color:#2563eb;text-decoration:none;">
+        www.thedentistltd.co.ke
+      </a>
+      
+    </p>
+
+  </div>
+</div>
+`,
       })
     }
 
