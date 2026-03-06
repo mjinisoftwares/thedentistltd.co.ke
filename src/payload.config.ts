@@ -67,7 +67,7 @@ export default buildConfig({
     },
   }),
   email: resendAdapter({
-    apiKey: process.env.RESEND_API || '',
+    apiKey: process.env.RESEND_API_KEY || '',
     defaultFromAddress: 'info@thedentistltd.co.ke',
     defaultFromName: 'The Dentist LTD',
   }),

@@ -38,8 +38,10 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
     description,
   } = props
 
+  const router = useRouter()
+
   const formMethods = useForm({
-    defaultValues: formFromProps.fields,
+    mode: 'onBlur',
   })
 
   const {
@@ -47,66 +49,63 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
     formState: { errors },
     handleSubmit,
     register,
+    reset,
   } = formMethods
 
   const [isLoading, setIsLoading] = useState(false)
-  const [hasSubmitted, setHasSubmitted] = useState<boolean>()
-  const [error, setError] = useState<{ message: string; status?: string }>()
-  const router = useRouter()
+  const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [error, setError] = useState<{ message: string; status?: string } | null>(null)
 
   const onSubmit = useCallback(
-    (data: FormFieldBlock[]) => {
-      let loadingTimerID: ReturnType<typeof setTimeout>
+    async (data: Record<string, any>) => {
+      if (isLoading) return
 
-      const submitForm = async () => {
-        setError(undefined)
+      setError(null)
+      setIsLoading(true)
 
+      try {
         const dataToSend = Object.entries(data).map(([name, value]) => ({
           field: name,
           value,
         }))
 
-        loadingTimerID = setTimeout(() => {
-          setIsLoading(true)
-        }, 800)
+        /* SAVE TO PAYLOAD */
+        await fetch(`${getClientSideURL()}/api/form-submissions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            form: formID,
+            submissionData: dataToSend,
+          }),
+        })
 
-        try {
-          const req = await fetch(`${getClientSideURL()}/api/form-submissions`, {
-            body: JSON.stringify({
-              form: formID,
-              submissionData: dataToSend,
-            }),
-            headers: { 'Content-Type': 'application/json' },
-            method: 'POST',
-          })
+        /* SEND EMAIL (APPOINTMENT) */
+        await fetch(`${getClientSideURL()}/api/book-appointment`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            submissionData: dataToSend,
+          }),
+        })
 
-          const res = await req.json()
-          clearTimeout(loadingTimerID)
+        setHasSubmitted(true)
+        reset()
 
-          if (req.status >= 400) {
-            setIsLoading(false)
-            setError({
-              message: res.errors?.[0]?.message || 'Something went wrong.',
-              status: res.status,
-            })
-            return
-          }
-
-          setIsLoading(false)
-          setHasSubmitted(true)
-
-          if (confirmationType === 'redirect' && redirect?.url) {
-            router.push(redirect.url)
-          }
-        } catch {
-          setIsLoading(false)
-          setError({ message: 'Unexpected error occurred.' })
+        if (confirmationType === 'redirect' && redirect?.url) {
+          router.push(redirect.url)
         }
-      }
+      } catch (err) {
+        console.error(err)
 
-      void submitForm()
+        setError({
+          message: 'Something went wrong. Please try again.',
+          status: '500',
+        })
+      } finally {
+        setIsLoading(false)
+      }
     },
-    [router, formID, redirect, confirmationType],
+    [formID, redirect, confirmationType, router, isLoading, reset],
   )
 
   return (
@@ -119,7 +118,7 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
           )}
         >
           <div className="grid lg:grid-cols-2">
-            {/* LEFT — Image with Luxury Effects */}
+            {/* LEFT IMAGE */}
             <div className="group relative hidden lg:block overflow-hidden">
               {image && typeof image === 'object' && image.url ? (
                 <Image
@@ -131,37 +130,29 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
                   priority
                 />
               ) : (
-                <div className="h-full w-full bg-muted flex items-center justify-center">
+                <div className="flex h-full w-full items-center justify-center bg-muted">
                   <p className="text-muted-foreground">Upload image in CMS</p>
                 </div>
               )}
 
-              {/* Premium Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-black/10 to-transparent" />
             </div>
 
-            {/* RIGHT — Form Panel */}
+            {/* FORM PANEL */}
             <div className="relative p-10 md:p-14">
-              {/* Decorative Accent Line */}
               <div className="mb-6 h-1 w-16 rounded-full bg-primary" />
 
-              {/* Section Header */}
               {(title || description) && (
                 <div className="mb-8 space-y-3">
                   {title && (
-                    <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                      {title}
-                    </h2>
+                    <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{title}</h2>
                   )}
-                  {description && (
-                    <p className="text-base text-muted-foreground leading-relaxed">{description}</p>
-                  )}
+                  {description && <p className="text-muted-foreground">{description}</p>}
                 </div>
               )}
 
-              {/* Intro */}
               {enableIntro && introContent && !hasSubmitted && (
-                <div className="mb-10 animate-in fade-in duration-700">
+                <div className="mb-10">
                   <RichText
                     data={introContent}
                     enableGutter={false}
@@ -171,9 +162,9 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
               )}
 
               <FormProvider {...formMethods}>
-                {/* SUCCESS STATE */}
+                {/* SUCCESS */}
                 {!isLoading && hasSubmitted && confirmationType === 'message' && (
-                  <div className="py-16 text-center animate-in fade-in zoom-in-95 duration-500">
+                  <div className="animate-in fade-in zoom-in-95 py-16 text-center">
                     <CheckCircle2 className="mx-auto mb-6 h-16 w-16 text-green-500" />
                     <RichText
                       data={confirmationMessage}
@@ -182,23 +173,23 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
                   </div>
                 )}
 
-                {/* LOADING STATE */}
-                {isLoading && !hasSubmitted && (
-                  <div className="py-20 flex flex-col items-center justify-center space-y-4 animate-in fade-in duration-300">
+                {/* LOADING */}
+                {isLoading && (
+                  <div className="flex flex-col items-center justify-center py-20">
                     <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                    <p className="text-muted-foreground font-medium">Processing your request...</p>
+                    <p className="mt-4 text-muted-foreground">Processing your request...</p>
                   </div>
                 )}
 
                 {/* ERROR */}
                 {error && (
-                  <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600 animate-in fade-in">
-                    {error.status || '500'}: {error.message}
+                  <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+                    {error.status}: {error.message}
                   </div>
                 )}
 
                 {/* FORM */}
-                {!hasSubmitted && (
+                {!hasSubmitted && !isLoading && (
                   <form id={formID} onSubmit={handleSubmit(onSubmit)} className="space-y-7">
                     {formFromProps?.fields?.map((field, index) => {
                       const Field: React.FC<any> = fields?.[field.blockType as keyof typeof fields]
@@ -222,25 +213,14 @@ export const FormBlock: React.FC<{ id?: string } & FormBlockType> = (props) => {
                       )
                     })}
 
-                    {/* PREMIUM BUTTON */}
                     <div className="pt-6">
                       <Button
                         type="submit"
                         size="lg"
                         disabled={isLoading}
-                        className={cn(
-                          'w-full rounded-full text-base font-medium transition-all duration-300',
-                          'hover:scale-[1.02] active:scale-[0.98]',
-                        )}
+                        className="w-full rounded-full text-base font-medium transition-all hover:scale-[1.02]"
                       >
-                        {isLoading ? (
-                          <span className="flex items-center justify-center gap-2">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            Submitting...
-                          </span>
-                        ) : (
-                          submitButtonLabel || 'Book Appointment'
-                        )}
+                        {submitButtonLabel || 'Book Appointment'}
                       </Button>
                     </div>
                   </form>

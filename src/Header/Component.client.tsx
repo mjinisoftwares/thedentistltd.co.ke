@@ -55,7 +55,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
         {...(theme ? { 'data-theme': theme } : {})}
         role="banner"
       >
-        <div className="container h-20 flex items-center justify-between gap-4">
+        <div className="max-w-7xl container h-20 flex items-center justify-between gap-4">
           {/* LOGO */}
           <Link href="/" aria-label="Go to homepage">
             <Logo loading="eager" priority="high" />
