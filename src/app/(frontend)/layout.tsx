@@ -12,6 +12,8 @@ import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
 import WhatsAppButton from '@/components/WhatsAppButton'
+import Script from 'next/script'
+
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,6 +23,20 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
         <link rel="preconnect" href="https://featurable.com" />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17982547984"
+          strategy="afterInteractive"
+        />
+
+        {/* Inline config */}
+        <Script id="google-ads" strategy="afterInteractive">
+          {`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-17982547984');
+    `}
+        </Script>
       </head>
       <body>
         <Providers>
